@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/flowable?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+flowable:
+  database-schema-update: true
+  idm.app.admin.first-name: Admin
+  idm.app.admin.last-name: User
+  idm.engine.configurator.database-schema-update: true
+  idm:
+    app:
+      enabled: true
+  modeler:
+    app:
+      enabled: true
+  common:
+    app:
+      idm-url: http://localhost:8080/flowable-idm
+      idm-admin:
+        user: admin
+        password: test
+  rest:
+    app:
+      authentication-mode: any-user
+      enabled: true
+      root: flowable-rest
+      swagger-enabled: true
+logging:
+  level:
+    org.springframework: DEBUG
+    com.zaxxer.hikari: DEBUG
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
