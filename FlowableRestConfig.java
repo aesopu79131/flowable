@@ -2,12 +2,13 @@ package com.example.flowable.config;
 
 import org.flowable.rest.service.api.RestResponseFactory;
 import org.flowable.spring.boot.RestApiAutoConfiguration;
+import org.flowable.spring.boot.rest.EnableFlowableRest;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.filter.FilterRegistrationBean;
-import org.springframework.web.filter.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableFlowableRest
@@ -20,7 +21,7 @@ public class FlowableRestConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilter() {
+    public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
@@ -28,8 +29,6 @@ public class FlowableRestConfig {
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-        bean.setOrder(0);
-        return bean;
+        return new CorsFilter(source);
     }
 }
