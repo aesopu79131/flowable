@@ -21,4 +21,13 @@ public class FlowableConfig {
     public IdmIdentityService idmIdentityService(IdmEngineConfiguration configuration) {
         return configuration.getIdmIdentityService();
     }
+
+    @Bean
+    public SpringProcessEngineConfiguration processEngineConfiguration() {
+        SpringProcessEngineConfiguration configuration = new SpringProcessEngineConfiguration();
+        // ... 其他配置 ...
+        configuration.setTenantCheckEnabled(true);
+        configuration.setFallbackToDefaultTenant(true);
+        return configuration;
+    }
 }

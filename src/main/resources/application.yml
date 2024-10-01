@@ -11,7 +11,7 @@ flowable:
   idm.app.admin.password: test
   idm.app.admin.email: admin@example.com
   idm.app.admin.first-name: Admin
-  idm.app.admin.last-name: Dragon
+  idm.app.admin.last-name: User
   idm.engine.configurator.database-schema-update: true
   idm:
     app:
@@ -33,14 +33,13 @@ flowable:
       swagger-enabled: true
 logging:
   file:
-    name: /logs/flowable.log
+    name: ./logs/flowable.log
   level:
     org.springframework: DEBUG
-    com.zaxxer.hikari: DEBUG
-    org.springframework.web: DEBUG
     org.flowable: DEBUG
+    com.zaxxer.hikari: DEBUG
 
 server:
-  port: 9898
+  port: 8080
   servlet:
     context-path: /

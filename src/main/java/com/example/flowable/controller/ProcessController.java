@@ -3,6 +3,7 @@ package com.example.flowable.controller;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,11 +33,37 @@ public class ProcessController {
 
     @GetMapping("/start-process/{processDefinitionKey}")
     public String startProcess(@PathVariable String processDefinitionKey) {
-        if (repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionKey).count() > 0) {
-            runtimeService.startProcessInstanceByKey(processDefinitionKey);
-            return "Process " + processDefinitionKey + " started successfully!";
+        try {
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                    .processDefinitionKey(processDefinitionKey)
+                    .latestVersion()
+                    .singleResult();
+            
+            if (processDefinition != null) {
+                ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey);
+                return "Process " + processDefinitionKey + " started! Instance ID: " + processInstance.getId();
+            } else {
+                return "Cannt found the " + processDefinitionKey + "！";
+            }
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @GetMapping("/process-info/{processDefinitionKey}")
+    public String getProcessInfo(@PathVariable String processDefinitionKey) {
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .latestVersion()
+                .singleResult();
+        
+        if (processDefinition != null) {
+            return "Process Definition: " + processDefinition.getName() + 
+                   ", Key: " + processDefinition.getKey() + 
+                   ", Ver.: " + processDefinition.getVersion() + 
+                   ", Deployment ID: " + processDefinition.getDeploymentId();
         } else {
-            return "Process definition " + processDefinitionKey + " not found!";
+            return "Cannot found the deployment " + processDefinitionKey + "！";
         }
     }
 }
