@@ -40,8 +40,8 @@ public class TaskController {
     public ResponseEntity<List<TaskDTO>> getTasks() {
         List<Task> tasks = taskService.createTaskQuery().list();
         List<TaskDTO> taskDTOs = tasks.stream()
-            .map(this::convertToDTO)
-            .collect(Collectors.toList());
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(taskDTOs);
     }
 
@@ -70,18 +70,18 @@ public class TaskController {
         return ResponseEntity.ok(taskDTO);
     }
 
-    @GetMapping("/{taskId}/complete")
+    @PostMapping("/{taskId}/complete")
     public ResponseEntity<String> completeTask(@PathVariable String taskId) {
         try {
             Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
             if (task != null) {
                 taskService.complete(taskId);
-                return ResponseEntity.ok("任务 " + taskId + " 已完成");
+                return ResponseEntity.ok("Task " + taskId + " is completed");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到任务 " + taskId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found task id: " + taskId);
             }
         } catch (Exception e) {
-            String errorMessage = "完成任务时出错：" + e.getMessage();
+            String errorMessage = "Error：" + e.getMessage();
             e.printStackTrace(); // 在控制台打印堆栈跟踪
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
