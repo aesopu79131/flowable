@@ -19,18 +19,26 @@ flowable:
   modeler:
     app:
       enabled: true
+  task:
+    app:
+      enabled: true
   common:
     app:
       idm-url: http://localhost:8080/flowable-idm
       idm-admin:
         user: admin
         password: test
+  xml:
+    encoding: UTF-8
   rest:
     app:
       authentication-mode: any-user
+      # authentication-mode: verify-privilege
       enabled: true
       root: flowable-rest
       swagger-enabled: true
+  ui:
+    default-locale: en
 logging:
   file:
     name: ./logs/flowable.log
