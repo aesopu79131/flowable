@@ -86,7 +86,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>1.18.28</version> <!-- 确保使用最新版本 -->
+            <scope>provided</scope> <!-- 由于 Lombok 只在编译时使用，因此可以设置为 provided -->
         </dependency>
 
         <dependency>
@@ -106,6 +107,12 @@
             <groupId>org.openjdk.nashorn</groupId>
             <artifactId>nashorn-core</artifactId>
             <version>15.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

@@ -7,14 +7,22 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.example.flowable.dto.SubmitPRDTO;
 
 @RestController
 @RequestMapping("/processes")
+
 public class ProcessController {
 
     @Autowired
@@ -33,23 +41,35 @@ public class ProcessController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/start/{processDefinitionKey}")
-    public String startProcess(@PathVariable String processDefinitionKey) {
-        try {
-            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                    .processDefinitionKey(processDefinitionKey)
-                    .latestVersion()
-                    .singleResult();
+    // @PostMapping("/start/{processDefinitionKey}")
+    @PostMapping(value = "/start", consumes = "application/json")
+    public ResponseEntity<String> startProcess(@RequestBody SubmitPRDTO requestBody) {
+        // throws Exception {
+        // System.out.println(payload);
+        // }
 
-            if (processDefinition != null) {
-                ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey);
-                return "Process " + processDefinitionKey + " started! Instance ID: " + processInstance.getId();
-            } else {
-                return "Cannt found the " + processDefinitionKey + "！";
-            }
-        } catch (Exception e) {
-            return "Error: " + e.getMessage();
-        }
+        System.out.println(requestBody.getProcessDefinitionKey());
+
+        return ResponseEntity.ok("1");
+
+        // try {
+        // ProcessDefinition processDefinition =
+        // repositoryService.createProcessDefinitionQuery()
+        // .processDefinitionKey(processDefinitionKey)
+        // .latestVersion()
+        // .singleResult();
+
+        // if (processDefinition != null) {
+        // ProcessInstance processInstance =
+        // runtimeService.startProcessInstanceByKey(processDefinitionKey);
+        // return "Process " + processDefinitionKey + " started! Instance ID: " +
+        // processInstance.getId();
+        // } else {
+        // return "Cannt found the " + processDefinitionKey + "！";
+        // }
+        // } catch (Exception e) {
+        // return "Error: " + e.getMessage();
+        // }
     }
 
     @GetMapping("/info/{processDefinitionKey}")

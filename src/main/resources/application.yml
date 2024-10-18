@@ -26,8 +26,8 @@ flowable:
     app:
       idm-url: http://localhost:8080/flowable-idm
       idm-admin:
-        user: admin
-        password: test
+        user: Admin
+        password: P@ssw0rd
   xml:
     encoding: UTF-8
   rest:
