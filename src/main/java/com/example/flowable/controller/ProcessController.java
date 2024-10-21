@@ -1,5 +1,8 @@
 package com.example.flowable.controller;
 
+import com.example.flowable.dto.SubmitPRDTO;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -14,15 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.example.flowable.dto.SubmitPRDTO;
-
 @RestController
 @RequestMapping("/processes")
-
 public class ProcessController {
 
     @Autowired
@@ -30,6 +31,8 @@ public class ProcessController {
 
     @Autowired
     private RepositoryService repositoryService;
+
+    private final Gson gson = new Gson(); // 创建 Gson 实例
 
     @GetMapping("/list")
     public List<String> listProcesses() {
@@ -47,29 +50,38 @@ public class ProcessController {
         // throws Exception {
         // System.out.println(payload);
         // }
+        String processKey = requestBody.getProcessDefinitionKey();
+        String businessKey = requestBody.getBusinessKey();
+        Object variables = requestBody.getVariables();
 
-        System.out.println(requestBody.getProcessDefinitionKey());
+        // 将 Object variables 转换为 Map
+        Type mapType = new TypeToken<Map<String, Object>>() {
+        }.getType();
+        Map<String, Object> variablesMap = gson.fromJson(gson.toJson(variables), mapType);
 
-        return ResponseEntity.ok("1");
+        // System.out.println(processKey);
+        // System.out.println(businessKey);
+        // System.out.println(variablesMap); // 打印转换后的 Map
 
-        // try {
-        // ProcessDefinition processDefinition =
-        // repositoryService.createProcessDefinitionQuery()
-        // .processDefinitionKey(processDefinitionKey)
-        // .latestVersion()
-        // .singleResult();
+        try {
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                    .processDefinitionKey(processKey)
+                    .latestVersion()
+                    .singleResult();
 
-        // if (processDefinition != null) {
-        // ProcessInstance processInstance =
-        // runtimeService.startProcessInstanceByKey(processDefinitionKey);
-        // return "Process " + processDefinitionKey + " started! Instance ID: " +
-        // processInstance.getId();
-        // } else {
-        // return "Cannt found the " + processDefinitionKey + "！";
-        // }
-        // } catch (Exception e) {
-        // return "Error: " + e.getMessage();
-        // }
+            if (processDefinition != null) {
+                ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, businessKey,
+                        variablesMap);
+                return ResponseEntity.ok("Process " + processKey + " started! Instance ID: "
+                        +
+                        processInstance.getId());
+            } else {
+                return ResponseEntity.ok("Cannot found the " + processKey + "！");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.ok("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/info/{processDefinitionKey}")

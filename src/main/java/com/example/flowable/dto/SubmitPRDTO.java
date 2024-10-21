@@ -9,7 +9,11 @@ public class SubmitPRDTO {
         return processDefinitionKey;
     }
 
-    // public void setProcessDefinitionKey(String processDefinitionKey) {
-    // this.processDefinitionKey = processDefinitionKey;
-    // }
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public Object getVariables() {
+        return variables;
+    }
 }
