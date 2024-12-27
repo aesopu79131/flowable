@@ -1,5 +1,6 @@
 package com.example.flowable.controller;
 
+import org.flowable.engine.IdentityService;
 import com.example.flowable.dto.SubmitPRDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,6 +35,9 @@ public class ProcessController {
 
     private final Gson gson = new Gson(); // 创建 Gson 实例
 
+    @Autowired
+    private IdentityService identityService;
+
     @GetMapping("/list")
     public List<String> listProcesses() {
         return repositoryService.createProcessDefinitionQuery()
@@ -59,11 +63,12 @@ public class ProcessController {
         }.getType();
         Map<String, Object> variablesMap = gson.fromJson(gson.toJson(variables), mapType);
 
-        // System.out.println(processKey);
+        System.out.println(processKey);
         // System.out.println(businessKey);
         // System.out.println(variablesMap); // 打印转换后的 Map
 
         try {
+            identityService.setAuthenticatedUserId("amymschoi");
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                     .processDefinitionKey(processKey)
                     .latestVersion()
@@ -72,6 +77,7 @@ public class ProcessController {
             if (processDefinition != null) {
                 ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, businessKey,
                         variablesMap);
+
                 return ResponseEntity.ok("Process " + processKey + " started! Instance ID: "
                         +
                         processInstance.getId());
@@ -80,7 +86,7 @@ public class ProcessController {
             }
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.ok("Error: " + e.getMessage());
+            return ResponseEntity.ok("Error 2: " + e.getMessage());
         }
     }
 
